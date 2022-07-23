@@ -2,14 +2,15 @@
   "name": "gameboard",
   "version": "1.0.0",
   "description": "A virtual gameboard for roleplaying games.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.1",
-    "node": "^18.5.0"
+    "node": "^18.5.0",
+    "ws": "^8.8.1"
   }
 }
