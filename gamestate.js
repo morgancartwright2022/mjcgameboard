@@ -4,7 +4,7 @@ const gamestate = {
     chat: [],
     icons: [],
     colors: [],
-    chat: (text) => gamestate.chat.push(text),
+    addChat: (text) => {gamestate.chat.push(text)},
     addIcon: (x, y, src) => gamestate.icons.push({x, y, src}),
     removeIcon: (x, y) => gamestate.icons = gamestate.icons.filter(icon => icon.x !== x || icon.y !== y),
     newBoard: (rows, cols) => gamestate.boardSize = {rows, cols},
