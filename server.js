@@ -59,7 +59,7 @@ wss.on('connection', ws => {
     const message = JSON.parse(data.toString());
 
     // If this is not a server message, send it to the other clients
-    if(message.type != "newClient") {
+    if(message.type != "newClient" && message.type != "ping") {
       wss.clients.forEach(client => {
         if(client !== ws && client.readyState === WebSocket.OPEN) {
           client.send(data.toString());
