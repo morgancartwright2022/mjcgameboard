@@ -3,8 +3,8 @@ const http = require("http");
 const { receiveMessageOnPort } = require("worker_threads");
 const WebSocket = require("ws");
 const gamestate = require("./gamestate.js").gamestate;
+const DatabaseConnector = require("./gamestate.js").DatabaseConnector;
 const { Client } = require('pg');
-
 
 const port = process.env.PORT || 3000;
 
@@ -14,28 +14,30 @@ const wss = new WebSocket.Server({server});
 /*
  * Connect to our database
  */
-
-const client = new Client({
+const dbClient = new Client({
   connectionString: process.env.DATABASE_URL || local,
   ssl: {
     rejectUnauthorized: false
   }
 });
 
-client.connect();
+dbClient.connect();
 
-client.query('SELECT username from users', (err, res) => {
-  if (err) throw err;
-  for (let row of res.rows) {
-    console.log(JSON.stringify(row));
-  }
-});
-
-const SqlUser = {
+// SQL Objects
+const sqlUser = {
   fetchAll: callback => {
-    client.query('SELECT username FROM users', (err, res) => {
+    dbClient.query('SELECT username FROM users', (err, res) => {
       if(err) console.log(err);
       else callback(res.rows);
+    });
+  }
+}
+
+const sqlTable = {
+  fetchTable: callback => {
+    dbClient.query('SELECT * FROM tables', (err, res) => {
+      if(err) console.log(err);
+      else callback(res.rows[0]);
     });
   }
 }
@@ -67,10 +69,10 @@ function receiveMessage(message, client) {
       case "ping":
           break;
       case "newClient":
-        SqlUser.fetchAll(users => {
+        sqlTable.fetchTable(table => {
           sendMessage(client, "serverData", {
             gamestate: gamestate.toJson(),
-            users: users
+            table: table
           });
         });
         break;
